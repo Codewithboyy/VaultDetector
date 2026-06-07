@@ -8,9 +8,6 @@ public class VaultDetectorClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         System.out.println("[VaultDetector] Client Loaded!");
-    }
-
-    public void onInitializeClient() {
         ClientEvents.register();
     }
 }
