@@ -1,7 +1,7 @@
 package com.spydr6307.client.hud;
 
 import com.spydr6307.client.config.ModState;
-import com.spydr6307.client.vault.VaultData;
+import com.spydr6307.client.vault.VaultController;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
@@ -18,24 +18,22 @@ public class VaultHud {
                 return;
             }
 
-            String status = ModState.isEnabled() ? "ON" : "OFF";
-
             drawContext.drawText(
                     client.textRenderer,
-                    "VaultDetector: " + status,
+                    "VaultDetector: " + (ModState.isEnabled() ? "ON" : "OFF"),
                     10,
                     10,
                     0x00FF00,
                     true
             );
 
-            if (VaultData.hasVault()) {
+            if (VaultController.hasVault()) {
 
-                BlockPos pos = VaultData.getCurrentVault();
+                BlockPos pos = VaultController.getTrackedVault();
 
                 drawContext.drawText(
                         client.textRenderer,
-                        "Vault: " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ(),
+                        "Vault @ " + pos.getX() + " " + pos.getY() + " " + pos.getZ(),
                         10,
                         25,
                         0xFFFFFF,
