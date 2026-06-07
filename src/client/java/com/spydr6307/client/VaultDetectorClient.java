@@ -1,10 +1,16 @@
 package com.spydr6307.client;
 
 import net.fabricmc.api.ClientModInitializer;
+import com.spydr6307.client.event.ClientEvents;
 
 public class VaultDetectorClient implements ClientModInitializer {
-	@Override
-	public void onInitializeClient() {
-		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
-	}
+
+    @Override
+    public void onInitializeClient() {
+        System.out.println("[VaultDetector] Client Loaded!");
+    }
+
+    public void onInitializeClient() {
+        ClientEvents.register();
+    }
 }
