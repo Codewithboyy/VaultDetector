@@ -19,9 +19,7 @@ public class KeybindManager {
                 "key.vaultdetector.toggle",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_V,
-                KeyBinding.Category.create(
-                    "category.vaultdetector"
-                )
+                KeyBinding.Category.MISC
             )
         );
 
