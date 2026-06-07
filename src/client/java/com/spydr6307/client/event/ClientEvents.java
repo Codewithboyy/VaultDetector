@@ -1,7 +1,8 @@
 package com.spydr6307.client.event;
 
 import com.spydr6307.client.config.ModState;
-import com.spydr6307.client.vault.VaultController;
+import com.spydr6307.client.vault.VaultReader;
+import com.spydr6307.client.vault.VaultState;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.hit.BlockHitResult;
@@ -14,28 +15,32 @@ public class ClientEvents {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
 
             if (client.player == null || client.world == null) {
-                VaultController.tick(false, null);
+                VaultState.reset();
                 return;
             }
 
             if (!ModState.isEnabled()) {
-                VaultController.tick(false, null);
+                VaultState.reset();
                 return;
             }
 
-            boolean lookingAtVault = false;
-            BlockPos pos = null;
-
-            if (client.crosshairTarget instanceof BlockHitResult hit) {
-
-                pos = hit.getBlockPos();
-
-                if (client.world.getBlockState(pos).isOf(Blocks.VAULT)) {
-                    lookingAtVault = true;
-                }
+            if (!(client.crosshairTarget instanceof BlockHitResult hit)) {
+                VaultState.reset();
+                return;
             }
 
-            VaultController.tick(lookingAtVault, pos);
+            BlockPos pos = hit.getBlockPos();
+
+            if (!client.world.getBlockState(pos).isOf(Blocks.VAULT)) {
+                VaultState.reset();
+                return;
+            }
+
+            VaultState.setActive(true);
+            VaultState.setPosition(pos);
+
+            String state = VaultReader.readVaultState(client.world, pos);
+            VaultState.setDebugInfo(state);
         });
     }
 }
