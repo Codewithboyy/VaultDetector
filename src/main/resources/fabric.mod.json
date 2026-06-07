@@ -22,13 +22,6 @@
 			"com.spydr6307.client.VaultDetectorClient"
 		]
 	},
-	"mixins": [
-		"vaultdetector.mixins.json",
-		{
-			"config": "vaultdetector.client.mixins.json",
-			"environment": "client"
-		}
-	],
 	"depends": {
 		"fabricloader": ">=0.19.3",
 		"minecraft": ">=1.21 <=1.21.11",
