@@ -1,0 +1,229 @@
+===== src/client/java/com/spydr6307/client/vault/VaultAnalyzer.java =====
+package com.spydr6307.client.vault;
+
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.world.World;
+import net.minecraft.util.math.BlockPos;
+
+public class VaultAnalyzer {
+
+    public static VaultScanResult scan(World world, BlockPos pos) {
+
+        if (world == null || pos == null) {
+            return new VaultScanResult(false, "NULL");
+        }
+
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+
+        if (blockEntity == null) {
+            return new VaultScanResult(false, "NO_BLOCK_ENTITY");
+        }
+
+        String name = blockEntity.getClass().getName();
+
+        return new VaultScanResult(true, name);
+    }
+}
+
+===== src/client/java/com/spydr6307/client/vault/VaultController.java =====
+package com.spydr6307.client.vault;
+
+import net.minecraft.util.math.BlockPos;
+
+public class VaultController {
+
+    private static BlockPos trackedVault;
+    private static boolean isVaultLookedAt;
+
+    public static void tick(boolean lookingAtVault, BlockPos pos) {
+
+        isVaultLookedAt = lookingAtVault;
+
+        if (lookingAtVault && pos != null) {
+            trackedVault = pos;
+        } else if (!lookingAtVault) {
+            trackedVault = null;
+        }
+    }
+
+    public static boolean isLookingAtVault() {
+        return isVaultLookedAt;
+    }
+
+    public static BlockPos getTrackedVault() {
+        return trackedVault;
+    }
+
+    public static boolean hasVault() {
+        return trackedVault != null;
+    }
+}
+
+===== src/client/java/com/spydr6307/client/vault/VaultData.java =====
+package com.spydr6307.client.vault;
+
+import net.minecraft.util.math.BlockPos;
+
+public class VaultData {
+
+    private static BlockPos currentVault;
+
+    public static void setCurrentVault(BlockPos pos) {
+        currentVault = pos;
+    }
+
+    public static BlockPos getCurrentVault() {
+        return currentVault;
+    }
+
+    public static boolean hasVault() {
+        return currentVault != null;
+    }
+
+    public static void clear() {
+        currentVault = null;
+    }
+}
+===== src/client/java/com/spydr6307/client/vault/VaultReader.java =====
+package com.spydr6307.client.vault;
+
+import net.minecraft.world.World;
+import net.minecraft.util.math.BlockPos;
+
+public class VaultReader {
+
+    public static String readVaultState(World world, BlockPos pos) {
+
+        VaultScanResult result = VaultAnalyzer.scan(world, pos);
+
+        if (!result.isVaultFound()) {
+            return result.getBlockEntityName();
+        }
+
+        return result.getBlockEntityName();
+    }
+}
+
+===== src/client/java/com/spydr6307/client/vault/VaultScanResult.java =====
+package com.spydr6307.client.vault;
+
+public class VaultScanResult {
+
+    private final boolean vaultFound;
+    private final String blockEntityName;
+
+    public VaultScanResult(boolean vaultFound, String blockEntityName) {
+        this.vaultFound = vaultFound;
+        this.blockEntityName = blockEntityName;
+    }
+
+    public boolean isVaultFound() {
+        return vaultFound;
+    }
+
+    public String getBlockEntityName() {
+        return blockEntityName;
+    }
+}
+
+===== src/client/java/com/spydr6307/client/vault/VaultState.java =====
+package com.spydr6307.client.vault;
+
+import net.minecraft.util.math.BlockPos;
+
+public class VaultState {
+
+    private static boolean active = false;
+    private static BlockPos position = null;
+
+    private static String debugInfo = "NONE";
+
+    public static void setActive(boolean value) {
+        active = value;
+    }
+
+    public static boolean isActive() {
+        return active;
+    }
+
+    public static void setPosition(BlockPos pos) {
+        position = pos;
+    }
+
+    public static BlockPos getPosition() {
+        return position;
+    }
+
+    public static void setDebugInfo(String info) {
+        debugInfo = info;
+    }
+
+    public static String getDebugInfo() {
+        return debugInfo;
+    }
+
+    public static void reset() {
+        active = false;
+        position = null;
+        debugInfo = "NONE";
+    }
+}
+===== src/client/java/com/spydr6307/client/vault/VaultTarget.java =====
+package com.spydr6307.client.vault;
+
+import net.minecraft.util.math.BlockPos;
+
+public class VaultTarget {
+
+    private static BlockPos position;
+
+    public static void set(BlockPos pos) {
+        position = pos;
+    }
+
+    public static BlockPos get() {
+        return position;
+    }
+
+    public static boolean exists() {
+        return position != null;
+    }
+
+    public static void clear() {
+        position = null;
+    }
+}
+
+===== src/client/java/com/spydr6307/client/vault/VaultTracker.java =====
+package com.spydr6307.client.vault;
+
+import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+
+public class VaultTracker {
+
+    public static void tick(MinecraftClient client) {
+
+        if (client.player == null || client.world == null) {
+            VaultTarget.clear();
+            return;
+        }
+
+        if (!(client.crosshairTarget instanceof BlockHitResult hit)) {
+            VaultTarget.clear();
+            return;
+        }
+
+        BlockPos pos = hit.getBlockPos();
+
+        if (!client.world.getBlockState(pos).isOf(Blocks.VAULT)) {
+            VaultTarget.clear();
+            return;
+        }
+
+        VaultTarget.set(pos);
+    }
+}
+

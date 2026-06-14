@@ -1,8 +1,8 @@
 package com.spydr6307.client.vault;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.world.World;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class VaultAnalyzer {
 
@@ -19,6 +19,9 @@ public class VaultAnalyzer {
         }
 
         String name = blockEntity.getClass().getName();
+
+        VaultDebugData.incrementScans();
+        VaultDebugData.setLastBlockEntity(name);
 
         return new VaultScanResult(true, name);
     }
