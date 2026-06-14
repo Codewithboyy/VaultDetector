@@ -15,12 +15,12 @@ public class KeybindManager {
     public static void register() {
 
         toggleKey = KeyBindingHelper.registerKeyBinding(
-                new KeyBinding(
-                        "key.vaultdetector.toggle",
-                        InputUtil.Type.KEYSYM,
-                        GLFW.GLFW_KEY_V,
-                        "category.vaultdetector"
-                )
+            new KeyBinding(
+                "key.vaultdetector.toggle",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_V,
+                KeyBinding.Category.MISC
+            )
         );
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
