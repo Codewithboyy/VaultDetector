@@ -1,5 +1,5 @@
 plugins {
-    id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+    id 'fabric-loom' version '1.7-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -7,17 +7,8 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-}
-
-loom {
-    splitEnvironmentSourceSets()
-
-    mods {
-        "vaultdetector" {
-            sourceSet sourceSets.main
-            sourceSet sourceSets.client
-        }
-    }
+    mavenCentral()
+    maven { url 'https://maven.fabricmc.net/' }
 }
 
 dependencies {
@@ -25,15 +16,15 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    
+    // Optional: For ModMenu config later
+    // modImplementation "com.terraformersmc:modmenu:11.0.0"
 }
 
 processResources {
-    def version = project.version
-
-    inputs.property "version", version
-
+    inputs.property "version", project.mod_version
     filesMatching("fabric.mod.json") {
-        expand "version": version
+        expand "version": project.mod_version
     }
 }
 
@@ -42,29 +33,22 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
-    withSourcesJar()
-
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
 }
 
-jar {
-    def projectName = project.name
+loom {
+    accessWidenerPath = file("src/main/resources/vaultdetector.accesswidener")
+}
 
-    inputs.property "projectName", projectName
-
-    from("LICENSE") {
-        rename { "${it}_${projectName}" }
-    }
+tasks.withType(ProcessResources).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 publishing {
     publications {
-        create("mavenJava", MavenPublication) {
+        mavenJava(MavenPublication) {
             from components.java
         }
-    }
-
-    repositories {
     }
 }
