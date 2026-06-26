@@ -34,18 +34,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
-loom {
-    accessWidenerPath = file("src/main/resources/vaultdetector.accesswidener")
-}
-
 tasks.withType(ProcessResources).configureEach {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
 }
