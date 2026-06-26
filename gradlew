@@ -1,56 +1,36 @@
 #!/usr/bin/env sh
 
-# Gradle start up script for POSIX
+# Gradle start up script for POSIX - CLEAN VERSION
 
 APP_NAME="Gradle"
 APP_BASE_NAME=`basename "$0"`
 
-# Default JVM options
-DEFAULT_JVM_OPTS='"-Xmx2g" "-Xms256m"'
+DEFAULT_JVM_OPTS="-Xmx2g -Xms256m"
 
-warn () {
-    echo "$*"
-}
+# Resolve APP_HOME
+PRG="$0"
+while [ -h "$PRG" ] ; do
+    ls=`ls -ld "$PRG"`
+    link=`expr "\( ls" : '.*-> \(.*\) \)'`
+    if expr "$link" : '/.*' > /dev/null; then
+        PRG="$link"
+    else
+        PRG=`dirname "$PRG"`"/$link"
+    fi
+done
+SAVED="`pwd`"
+cd "`dirname \"$PRG\"`/" >/dev/null
+APP_HOME="`pwd -P`"
+cd "$SAVED" >/dev/null
 
-die () {
-    echo
-    echo "$*"
-    echo
-    exit 1
-}
-
-# OS specific support
-cygwin=false
-msys=false
-darwin=false
-nonstop=false
-case "`uname`" in
-  CYGWIN* )
-    cygwin=true
-    ;;
-  Darwin* )
-    darwin=true
-    ;;
-  MINGW* )
-    msys=true
-    ;;
-  NONSTOP* )
-    nonstop=true
-    ;;
-esac
-
-# Locate Gradle wrapper jar
-if [ -z "$APP_HOME" ]; then
-  APP_HOME=`pwd -P`
-fi
 CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
 
-# Determine Java command
+# Java command
 if [ -n "$JAVA_HOME" ] ; then
     JAVACMD="$JAVA_HOME/bin/java"
 else
     JAVACMD="java"
 fi
 
-# Execute
+# Execute Gradle
 exec "$JAVACMD" $DEFAULT_JVM_OPTS -classpath "\( CLASSPATH" org.gradle.wrapper.GradleWrapperMain " \)@"
